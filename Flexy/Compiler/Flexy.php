@@ -943,15 +943,34 @@ class HTML_Template_Flexy_Compiler_Flexy extends HTML_Template_Flexy_Compiler {
     */
   
     function toStringTag($element) {
-        
-        $original = $element->getAttribute('ALT');
-        // techncially only input type=(submit|button|input) alt=.. applies, but we may 
-        // as well translate any occurance...
-        if ( (($element->tag == 'IMG') || ($element->tag == 'INPUT'))
-                && is_string($original) && strlen($original)) {
-            $this->addStringToGettext($original);
-            $quote = $element->ucAttributes['ALT']{0};
-            $element->ucAttributes['ALT'] = $quote  . $this->translateString($original). $quote;
+        $targets = array(
+            'ALT' => array('IMG', 'INPUT', 'AREA'),
+            // technically only input type=image alt=.. applies, but we may 
+            // as well translate any occurance...
+            'LABEL' => array('OPTION', 'OPTGROUP'),
+            'ABBR' => array('TH', 'TD'),
+            'SUMMARY' => array('TABLE'),
+            'STANDBY' => array('OBJECT'),
+        );
+        foreach ($targets as $attribute => $tags) {
+            if (in_array($element->tag, $tags)) {
+                $original = $element->getAttribute($attribute);
+                if (is_string($original) && strlen($original)) {
+                    $this->addStringToGettext($original);
+                    $quote = $element->ucAttributes[$attribute]{0};
+                    $element->ucAttributes[$attribute] = $quote  . $this->translateString($original). $quote;
+                }
+                break;
+            }
+        }
+        if ($element->tag == 'INPUT') {
+            $original = $element->getAttribute('VALUE');
+            if (in_array(strtolower($element->getAttribute('TYPE')), array('submit', 'reset', 'button'))
+                    && is_string($original) && strlen($original)) {
+                $this->addStringToGettext($original);
+                $quote = $element->ucAttributes['VALUE']{0};
+                $element->ucAttributes['VALUE'] = $quote  . $this->translateString($original). $quote;
+            }
         }
         $original = $element->getAttribute('TITLE');
         if (is_string($original) && strlen($original)) {
