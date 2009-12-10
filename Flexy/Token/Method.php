@@ -70,7 +70,8 @@ class HTML_Template_Flexy_Token_Method extends HTML_Template_Flexy_Token {
         if (!is_array($value)) {
             $value = $this->parseAndSetIf($value);
             $modifier = strrpos($value,':');
-            if ($modifier !== false) {
+            $parenClose = strrpos($value,')');
+            if ($modifier !== false && ($parenClose === false || $parenClose < $modifier)) {
                 $this->modifier = substr($value,$modifier+1);
                 $value = substr($value,0,$modifier);
             } else
