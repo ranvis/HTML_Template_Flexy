@@ -160,45 +160,13 @@ class HTML_Template_Flexy_Compiler_Flexy_CustomFlexyAttributes
     */
     function replaceChildren(&$element,&$val)
     {
-        // Most of the this method is borrowed from parseAttributeIf() in HTML_Template_Flexy_Compiler_Flexy_Tag
-        
-        // If this is a method, not a variable (last character is ')' )...
-        if (substr($val,-1) == ')') {
-            // grab args..
-            $args = substr($val,strpos($val,'(')+1,-1);
-            // simple explode ...
-            
-            $args = strlen(trim($args)) ? explode(',',$args) : array();
-            //print_R($args);
-            
-            // this is nasty... - we need to check for quotes = eg. # at beg. & end..
-            $args_clean = array();
-            // clean all method arguments...
-            for ($i=0; $i<count($args); $i++) {
-                if ($args[$i]{0} != '#') {
-                    $args_clean[] = $args[$i];
-                    continue;
-                }
-                // single # - so , must be inside..
-                if ((strlen($args[$i]) > 1) && ($args[$i]{strlen($args[$i])-1}=='#')) {
-                    $args_clean[] = $args[$i];
-                    continue;
-                }
-                
-                $args[$i] .=',' . $args[$i+1];
-                // remove args+1..
-                array_splice($args,$i+1,1);
-                $i--;
-                // reparse..
-            }
-            
-            //echo('<br/>VAL: ' . $val . ' is seen as method');
-            
-            $childToken =  $element->factory('Method',array(substr($val,0,strpos($val,'(')), $args_clean), $element->line);
+        // If this is a method, not a variable (contains '(' )...
+        if (strpos($val,'(') !== false) {
+            $childToken =  $element->factory('Method',$val,$element->line);
         } else {
 
             //echo('<br/>VAL: ' . $val . ' is seen as var');
-            $childToken =  $element->factory('Var', '{'.$val.'}', $element->line);
+            $childToken =  $element->factory('Var',$val,$element->line);
         }
 
         $element->children = array($childToken);

@@ -1,0 +1,18 @@
+<div flexy:if="true" flexy:omittag=""><p>test</p></div>
+<div flexy:if="true" flexy:omittag="irrelevant"><p>test</p></div>
+
+<p flexy:content="var">test</p>
+<p flexy:content="method()">test</p>
+<div flexy:content="var2:b">test</div>
+<div flexy:content="method2():b">test</div>
+
+<span flexy:replace="var">test</span>
+<span flexy:replace="var2:h">test</span>
+<span flexy:replace="object.var">test</span>
+<span flexy:replace="array[0]">test</span>
+<span flexy:replace="method()">test</span>
+<span flexy:replace="method2():h">test</span>
+<span flexy:replace="method(param,#param2#)">test</span>
+<span flexy:replace="method2(param,#param2#):h">test</span>
+<span flexy:replace="object.method()">test</span>
+<span flexy:replace="object.method2(param,#param2#)">test</span>

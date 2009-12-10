@@ -67,27 +67,75 @@ class HTML_Template_Flexy_Token_Method extends HTML_Template_Flexy_Token {
     
     function setValue($value) {
         // var_dump($value);
-        $method = $value[0];
-        if (substr($value[0],0,3) == 'if:') {
-            $this->isConditional = true;
-            if ($value[0]{3} == '!') {
-                $this->isNegative = '!';
-                $method = substr($value[0],4);
-            } else {
-                $method = substr($value[0],3);
+        if (!is_array($value)) {
+            $value = $this->parseAndSetIf($value);
+            $modifier = strrpos($value,':');
+            if ($modifier !== false) {
+                $this->modifier = substr($value,$modifier+1);
+                $value = substr($value,0,$modifier);
+            } else
+                $modifier = null;
+            $parenOpen = strpos($value,'(');
+            $method = substr($value,0,$parenOpen);
+            $value = substr($value,$parenOpen+1,-1);
+            $args = $this->parseMethodArguments($value);
+        } else {
+            $method = $this->parseAndSetIf($value[0]);
+            $args = $value[1];
+            if (strpos($method,":")) {
+                list($method,$this->modifier) = explode(':',$method);
             }
         }
         
-        if (strpos($method,":")) {
-            list($method,$this->modifier) = explode(':',$method);
-        }
         $this->method = $method;
         
-        $this->args = $value[1];
-        // modifier TODO!
-        
+        $this->args = $args;
     }
   
+
+    /**
+    * parseIf - parse if: or if:! and set isConditional, isNegative
+    * @access private
+    */
+
+    function parseAndSetIf($value) {
+        if (substr($value,0,3) == 'if:') {
+            $this->isConditional = true;
+            if ($value{3} == '!') {
+                $this->isNegative = '!';
+                $value = substr($value,4);
+            } else {
+                $value = substr($value,3);
+            }
+        }
+        return $value;
+    }
+  
+
+    /**
+    * parseMethodArguments - parse method arguments, either variables or literals
+    * @access private
+    */
+
+    function parseMethodArguments($value) {
+        $args = array();
+        while ($value != '') {
+            // check for quotes
+            if ($value{0} == '#') {
+                $hashClose = strpos($value,'#',1);
+                if ($hashClose !== false && $hashClose == strlen($value)-1 || $value{$hashClose+1} == ',') {
+                    $args[] = substr($value,0,$hashClose+1);
+                    $value = substr($value,$hashClose+2);
+                    continue;
+                }
+            }
+            $delimiterPosition = strcspn($value,',');
+            $args[] = substr($value,0,$delimiterPosition);
+            $value = substr($value,$delimiterPosition+1);
+        }
+        return $args;
+    }
+
 }
 
 

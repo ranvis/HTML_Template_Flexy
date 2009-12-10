@@ -554,39 +554,9 @@ class HTML_Template_Flexy_Compiler_Flexy_Tag
 
         }
         
-        if (substr($if,-1) == ')') {
-            // grab args..
-            $args = substr($if,strpos($if,'(')+1,-1);
-            // simple explode ...
-            
-            $args = strlen(trim($args)) ? explode(',',$args) : array();
-            //print_R($args);
-            
-            // this is nasty... - we need to check for quotes = eg. # at beg. & end..
-            $args_clean = array();
-            for ($i=0; $i<count($args); $i++) {
-                if ($args[$i]{0} != '#') {
-                    $args_clean[] = $args[$i];
-                    continue;
-                }
-                // single # - so , must be inside..
-                if ((strlen($args[$i]) > 1) && ($args[$i]{strlen($args[$i])-1}=='#')) {
-                    $args_clean[] = $args[$i];
-                    continue;
-                }
-                
-                $args[$i] .=',' . $args[$i+1];
-                // remove args+1..
-                array_splice($args,$i+1,1);
-                $i--;
-                // reparse..
-            }
-            
-            
-            
+        if (strpos($if,'(') !== false) {
             $ifObj =  $this->element->factory('Method',
-                    array('if:'.$ifnegative.substr($if,0,strpos($if,'(')), $args_clean),
-                    $this->element->line);
+                    'if:'.$ifnegative.$if,$this->element->line);
         } else {
             $ifObj =  $this->element->factory('If', $ifnegative.$if, $this->element->line);
         }
