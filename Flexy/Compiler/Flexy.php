@@ -643,10 +643,11 @@ class HTML_Template_Flexy_Compiler_Flexy extends HTML_Template_Flexy_Compiler {
             }
             $s =1;
             if ($a{0} == '#') {
-                if (is_numeric(substr($a, 1, -1))) {
-                    $ret .= substr($a, 1, -1);
+            	$a = substr($a, 1, -1);
+                if (is_numeric($a)) {
+                    $ret .= $a;
                 } else {
-                    $ret .= '"'. addslashes(substr($a, 1, -1)) . '"';
+                    $ret .= '"'. addcslashes($a, '\\"$') . '"';
                 }
                 continue;
             }
