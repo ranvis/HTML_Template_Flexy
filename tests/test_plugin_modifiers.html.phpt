@@ -11,11 +11,19 @@ compilefile('plugin_modifiers.html',
 	array('plugins'=>array('Savant'))
 );
 
+$errorFileName = 'flexy_raw_with_element.html';
+ob_start('stripErrorFilePath');
 compilefile('flexy_raw_with_element.html', 
 	array( ), 
 	array( )
  
 );
+function stripErrorFilePath($data) {
+	global $errorFileName;
+	$errorTemplate = "Error:/path/to/" . $errorFileName . " on Line ";
+	$errorMessage = str_replace('/path/to/', dirname(__FILE__) . "/templates" . DIRECTORY_SEPARATOR, $errorTemplate);
+	return str_replace($errorMessage, $errorTemplate, $data);
+}
 --EXPECTF--
 ===Compiling plugin_modifiers.html===
 
@@ -51,4 +59,5 @@ Bug #3946 - inside raw!
 
 ===Compiling flexy_raw_with_element.html===
 
-Error:/home/clockwerx/pear/HTML_Template_Flexy/tests/templates/flexy_raw_with_element.html on Line 5 in Tag &lt;INPUT&gt;:<BR>Flexy:raw can only be used with flexy:ignore, to prevent conversion of html elements to flexy elements
+Error:/path/to/flexy_raw_with_element.html on Line 5 in Tag &lt;INPUT&gt;:<BR>
+Flexy:raw can only be used with flexy:ignore, to prevent conversion of html elements to flexy elements

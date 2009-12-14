@@ -3,6 +3,10 @@
 require_once 'HTML/Template/Flexy.php';
 // simple testsuite..
 
+if (version_compare(PHP_VERSION, '5.1.0', '>=')) {
+	date_default_timezone_set('UTC');
+}
+
 function compilefile($file,$data =array(),$options=array(),$elements=array()) {
     
     $options = $options + array(
