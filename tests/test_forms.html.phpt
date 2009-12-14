@@ -77,25 +77,25 @@ compilefile('forms.html',
     
     <!-- bug 5267 -->
     <?php 
-                $element = $this->elements['opt_1'];
-                if (isset($this->elements['opt[]'])) {
-                    $element = $this->mergeElement($element,$this->elements['opt[]']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['opt_1'];
+                    if (isset($this->elements['opt[]'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['opt[]']);
+                    }
+                    echo  $_element->toHtml();?>
     <label for="opt_1">option 1</label>
     <?php 
-                $element = $this->elements['opt_2'];
-                if (isset($this->elements['opt[]'])) {
-                    $element = $this->mergeElement($element,$this->elements['opt[]']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['opt_2'];
+                    if (isset($this->elements['opt[]'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['opt[]']);
+                    }
+                    echo  $_element->toHtml();?>
     <label for="opt_3">option 2</label>
     <?php 
-                $element = $this->elements['opt_3'];
-                if (isset($this->elements['opt[]'])) {
-                    $element = $this->mergeElement($element,$this->elements['opt[]']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['opt_3'];
+                    if (isset($this->elements['opt[]'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['opt[]']);
+                    }
+                    echo  $_element->toHtml();?>
     <label for="opt_3">option 3</label>
 
 
@@ -110,33 +110,33 @@ compilefile('forms.html',
     #bug  bug6058    
 
     <br /><?php 
-                $element = $this->elements['1'];
-                if (isset($this->elements['payment_1_type'])) {
-                    $element = $this->mergeElement($element,$this->elements['payment_1_type']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['1'];
+                    if (isset($this->elements['payment_1_type'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['payment_1_type']);
+                    }
+                    echo  $_element->toHtml();?>
         Credit card
     <br /><?php 
-                $element = $this->elements['2'];
-                if (isset($this->elements['payment_1_type'])) {
-                    $element = $this->mergeElement($element,$this->elements['payment_1_type']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['2'];
+                    if (isset($this->elements['payment_1_type'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['payment_1_type']);
+                    }
+                    echo  $_element->toHtml();?>
         Cheque
 
     <br /><?php 
-                $element = $this->elements['3'];
-                if (isset($this->elements['payment_2_type'])) {
-                    $element = $this->mergeElement($element,$this->elements['payment_2_type']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['3'];
+                    if (isset($this->elements['payment_2_type'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['payment_2_type']);
+                    }
+                    echo  $_element->toHtml();?>
         Credit card
     <br /><?php 
-                $element = $this->elements['4'];
-                if (isset($this->elements['payment_2_type'])) {
-                    $element = $this->mergeElement($element,$this->elements['payment_2_type']);
-                }
-                echo  $element->toHtml();?>
+                    $_element = $this->elements['4'];
+                    if (isset($this->elements['payment_2_type'])) {
+                        $_element = $this->mergeElement($_element,$this->elements['payment_2_type']);
+                    }
+                    echo  $_element->toHtml();?>
         Cheque
     
     
@@ -1080,7 +1080,7 @@ Array
 <input name="testing2" value=""><input type="submit" name="_submit[1]"></form>
 
 <H2> Bug 1275 XHTML output </H2>
-<input type="checkbox" name="testingxhtml"><select name="xhtmllisttest">
+<input type="checkbox" name="testingxhtml" /><select name="xhtmllisttest">
 
 </select>
 
