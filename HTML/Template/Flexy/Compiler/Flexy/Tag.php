@@ -475,9 +475,25 @@ class HTML_Template_Flexy_Compiler_Flexy_Tag
         
         $this->element->hasForeach = true;
         // create a foreach element to wrap this with.
-        
+        $foreachTokens = explode( ",", $foreach ); //usual
+        $first = array_shift($foreachTokens);
+        // we will accept first argument as a method call.. with arguments.
+        // this however does not  deal with  '#' with commas and braces insed very weill..
+        if (strpos($first, '(') !== false) {
+            while (strpos($first, ')') === false) {
+                if (!count($foreachTokens)) {
+                    return $this->_raiseErrorWithPositionAndTag(
+                        "Missing Closer on functin call: An flexy:foreach attribute was found. flexy:foreach=&quot;$foreach&quot;<BR>
+                        the syntax is  &lt;sometag flexy:foreach=&quot;onarray,withvariable[,withanothervar] &gt;<BR>",
+                        null,  HTML_TEMPLATE_FLEXY_ERROR_DIE);
+                }
+                $first .= ',' . array_shift($foreachTokens);
+            }
+        }
+        array_unshift($foreachTokens, $first);
+
         $foreachObj =  $this->element->factory('Foreach',
-                explode(',',$foreach),
+                $foreachTokens,
                 $this->element->line);
         // failed = probably not enough variables..    
         
@@ -826,7 +842,7 @@ class HTML_Template_Flexy_Compiler_Flexy_Tag
             
             if ($this->element->getAttribute('ID')) {
                 $idvar     = 'sprintf(\''.$this->element->getAttribute('ID') .'\','.$this->element->toVar($var) .')';
-                $idreplace = '$this->elements['.$printfvar.']->attributes[\'id\'] = '.$idvar.';';
+                $idreplace = '$_element->attributes[\'id\'] = '.$idvar.';';
             }
             return  $ret . '
                 $_element = $this->mergeElement(
@@ -1024,7 +1040,37 @@ class HTML_Template_Flexy_Compiler_Flexy_Tag
     
     }       
        
-       
+    /**
+    * Deal with Label - build a element object for it (unless flexyignore is set)
+    *
+    *
+    * @return   string | false = html output or ignore (just output the tag)
+    * @access   public
+    */
+
+    function parseTagLabel()
+    {
+
+        if (empty($GLOBALS['_HTML_TEMPLATE_FLEXY']['currentOptions']['useElementLabels'])) {
+            return false;
+        }
+        // this may need some protection for general usage.....
+        
+        $for = $this->element->getAttribute('FOR');
+        $ret = '';
+        $tmp = $this->toStringChildren($this->element, $ret);
+        if (is_a($tmp,'PEAR_Error')) {
+            return $tmp;
+        }
+
+        return $this->compiler->appendPhp(
+                'echo "<label for=\"' . $for . '\">";' . 
+                'if (!empty($this->elements[\'' . $for . '\']->label)) ' .
+                ' { echo htmlspecialchars($this->elements[\'' . $for . '\']->label); } else { ?>' .
+                htmlspecialchars($ret) . '<? } ' .
+                'echo "</label>";'
+            );
+    }    
         
     
     
